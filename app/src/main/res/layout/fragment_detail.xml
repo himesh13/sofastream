@@ -2,11 +2,13 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background">
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -20,7 +22,7 @@
             <!-- Backdrop image -->
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="280dp">
+                android:layout_height="250dp">
 
                 <ImageView
                     android:id="@+id/ivDetailBackdrop"
@@ -35,179 +37,144 @@
 
             </FrameLayout>
 
-            <!-- Content area with poster + info -->
+            <!-- Content area with info -->
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:padding="16dp">
-
-                <ImageView
-                    android:id="@+id/ivDetailPoster"
-                    android:layout_width="100dp"
-                    android:layout_height="150dp"
-                    android:scaleType="centerCrop"
-                    android:layout_marginTop="-60dp"
-                    android:elevation="4dp" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="12dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/tvDetailTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/white"
-                        android:textSize="22sp"
-                        android:fontFamily="sans-serif-medium" />
-
-                    <TextView
-                        android:id="@+id/tvDetailMeta"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:textColor="@color/text_secondary"
-                        android:textSize="13sp" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
-
-                        <RatingBar
-                            android:id="@+id/ratingBar"
-                            style="?android:attr/ratingBarStyleSmall"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:isIndicator="true"
-                            android:numStars="5"
-                            android:stepSize="0.1"
-                            android:progressTint="@color/accent_color" />
-
-                        <TextView
-                            android:id="@+id/tvRatingValue"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="6dp"
-                            android:textColor="@color/text_secondary"
-                            android:textSize="12sp" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <!-- Action buttons -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingHorizontal="16dp"
-                android:paddingBottom="8dp">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnPlay"
-                    android:layout_width="0dp"
-                    android:layout_height="48dp"
-                    android:layout_weight="1"
-                    android:text="▶  Play"
-                    android:textColor="@color/black"
-                    app:backgroundTint="@color/white"
-                    app:cornerRadius="4dp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnRequest"
-                    android:layout_width="0dp"
-                    android:layout_height="48dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    android:text="+ Request"
-                    android:textColor="@color/white"
-                    app:backgroundTint="@color/button_dark"
-                    app:cornerRadius="4dp"
-                    app:strokeColor="@color/white"
-                    app:strokeWidth="1dp" />
-
-            </LinearLayout>
-
-            <!-- Tagline -->
-            <TextView
-                android:id="@+id/tvDetailTagline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="16dp"
-                android:paddingBottom="8dp"
-                android:textColor="@color/text_secondary"
-                android:textStyle="italic"
-                android:textSize="14sp"
-                android:visibility="gone" />
-
-            <!-- Overview -->
-            <TextView
-                android:id="@+id/tvDetailOverview"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="16dp"
-                android:paddingBottom="12dp"
-                android:textColor="@color/text_primary"
-                android:textSize="14sp"
-                android:lineSpacingExtra="3dp" />
-
-            <!-- Genres -->
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chipGroupGenres"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="16dp"
-                android:paddingBottom="16dp" />
-
-            <!-- Seasons section (only for series) -->
-            <LinearLayout
-                android:id="@+id/sectionSeasons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:padding="16dp">
 
                 <TextView
+                    android:id="@+id/tvDetailTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="16dp"
-                    android:layout_marginBottom="8dp"
-                    android:text="Seasons"
                     android:textColor="@color/white"
-                    android:textSize="16sp"
-                    android:fontFamily="sans-serif-medium" />
+                    android:textSize="26sp"
+                    android:fontFamily="sans-serif-black"
+                    tools:text="The Lincoln Lawyer" />
 
-                <com.google.android.material.chip.ChipGroup
-                    android:id="@+id/chipGroupSeasons"
+                <TextView
+                    android:id="@+id/tvDetailMeta"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="14sp"
+                    tools:text="2022  •  TV-MA  •  45m" />
+
+                <!-- Action buttons -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnPlay"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="16dp"
+                    android:text="▶  Play"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    app:backgroundTint="@color/white"
+                    app:cornerRadius="4dp"
+                    app:icon="@drawable/ic_play"
+                    app:iconTint="@color/black" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnRequest"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="8dp"
+                    android:text="+ Request"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    app:backgroundTint="#333333"
+                    app:cornerRadius="4dp" />
+
+                <TextView
+                    android:id="@+id/tvDetailOverview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingHorizontal="16dp"
-                    app:singleSelection="true" />
+                    android:layout_marginTop="16dp"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:lineSpacingExtra="4dp"
+                    tools:text="Hotshot LA defense attorney Mickey Haller will do whatever it takes to win as he navigates the criminal justice system from his trademark Lincoln." />
 
                 <TextView
-                    android:id="@+id/tvSelectedSeason"
+                    android:id="@+id/tvCastLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Cast: Manuel Garcia-Rulfo, Neve Campbell..."
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+            <!-- Tabs/Sections -->
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background"
+                app:tabIndicatorColor="@color/accent_color"
+                app:tabIndicatorHeight="4dp"
+                app:tabSelectedTextColor="@color/white"
+                app:tabTextColor="@color/text_secondary"
+                app:tabTextAppearance="@style/TextAppearance.MaterialComponents.Subtitle2">
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="EPISODES" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MORE LIKE THIS" />
+
+            </com.google.android.material.tabs.TabLayout>
+
+            <!-- Episodes Section -->
+            <LinearLayout
+                android:id="@+id/layoutEpisodes"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <Spinner
+                    android:id="@+id/spinnerSeasons"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
                     android:layout_marginHorizontal="16dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="8dp"
-                    android:textColor="@color/white"
-                    android:textSize="15sp" />
+                    android:layout_marginTop="8dp"
+                    android:backgroundTint="@color/white"
+                    android:popupBackground="@color/surface_dark" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvEpisodes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="false" />
+                    android:nestedScrollingEnabled="false"
+                    tools:listitem="@layout/item_episode_netflix" />
+
+            </LinearLayout>
+
+            <!-- Recommendations Section -->
+            <LinearLayout
+                android:id="@+id/layoutRecommendations"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvRecommendations"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingHorizontal="8dp"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
+                    app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                    app:spanCount="3"
+                    tools:listitem="@layout/item_media_card" />
 
             </LinearLayout>
 
@@ -216,7 +183,8 @@
                 android:id="@+id/progressBar"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                android:layout_gravity="center"
+                android:layout_marginTop="32dp"
                 android:visibility="gone" />
 
         </LinearLayout>
@@ -225,15 +193,15 @@
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/transparent"
-            app:navigationIcon="@drawable/ic_arrow_back"
-            app:navigationIconTint="@color/white" />
+            app:navigationIcon="@drawable/ic_arrow_back" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

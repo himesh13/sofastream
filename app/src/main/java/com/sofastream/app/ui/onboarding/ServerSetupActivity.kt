@@ -2,7 +2,6 @@ package com.sofastream.app.ui.onboarding
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
@@ -41,6 +40,7 @@ class ServerSetupActivity : AppCompatActivity() {
             val username = binding.etUsername.text?.toString()?.trim() ?: ""
             val password = binding.etPassword.text?.toString() ?: ""
             val jellyseerrUrl = binding.etJellyseerrUrl.text?.toString()?.trim() ?: ""
+            val jellyseerrApiKey = binding.etJellyseerrApiKey.text?.toString()?.trim() ?: ""
 
             if (jellyfinUrl.isBlank() || username.isBlank()) {
                 Toast.makeText(this, "Jellyfin URL and username are required", Toast.LENGTH_SHORT).show()
@@ -52,7 +52,7 @@ class ServerSetupActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            connectToJellyfin(jellyfinUrl, username, password, jellyseerrUrl)
+            connectToJellyfin(jellyfinUrl, username, password, jellyseerrUrl, jellyseerrApiKey)
         }
 
         binding.btnSkip.setOnClickListener {
@@ -67,17 +67,20 @@ class ServerSetupActivity : AppCompatActivity() {
             }
             lifecycleScope.launch {
                 prefs.saveJellyfinCredentials(jellyfinUrl, "", "default", "Guest")
-                val jellyseerrUrl = binding.etJellyseerrUrl.text?.toString()?.trim()
-                if (!jellyseerrUrl.isNullOrBlank()) {
-                    prefs.saveJellyseerrCredentials(jellyseerrUrl)
+                val jellyseerrUrl = binding.etJellyseerrUrl.text?.toString()?.trim() ?: ""
+                val jellyseerrApiKey = binding.etJellyseerrApiKey.text?.toString()?.trim() ?: ""
+                
+                if (jellyseerrUrl.isNotBlank()) {
+                    prefs.saveJellyseerrCredentials(jellyseerrUrl, jellyseerrApiKey)
                 }
+                
                 prefs.setSetupComplete(true)
                 navigateToMain()
             }
         }
     }
 
-    private fun connectToJellyfin(url: String, username: String, password: String, jellyseerrUrl: String) {
+    private fun connectToJellyfin(url: String, username: String, password: String, jellyseerrUrl: String, jellyseerrApiKey: String) {
         binding.progressBar.isVisible = true
         binding.btnConnect.isEnabled = false
 
@@ -93,9 +96,11 @@ class ServerSetupActivity : AppCompatActivity() {
                         return@launch
                     }
                     prefs.saveJellyfinCredentials(url, body.AccessToken, body.User.Id, body.User.Name)
+                    
                     if (jellyseerrUrl.isNotBlank()) {
-                        prefs.saveJellyseerrCredentials(jellyseerrUrl)
+                        prefs.saveJellyseerrCredentials(jellyseerrUrl, jellyseerrApiKey)
                     }
+
                     prefs.setSetupComplete(true)
                     Toast.makeText(this@ServerSetupActivity, "Connected successfully!", Toast.LENGTH_SHORT).show()
                     navigateToMain()

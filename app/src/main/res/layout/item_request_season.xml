@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="12dp"
+    android:paddingVertical="8dp">
+
+    <CheckBox
+        android:id="@+id/cbSeason"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:buttonTint="@color/white" />
+
+    <TextView
+        android:id="@+id/tvSeasonName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.5"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        tools:text="Season 1" />
+
+    <TextView
+        android:id="@+id/tvEpisodeCount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        tools:text="6" />
+
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/bg_status_badge"
+        android:gravity="center"
+        android:paddingVertical="4dp"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        tools:backgroundTint="#4F46E5"
+        tools:text="Not Requested" />
+
+</LinearLayout>

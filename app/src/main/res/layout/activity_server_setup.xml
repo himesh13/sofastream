@@ -74,7 +74,7 @@
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="Password"
             app:endIconMode="password_toggle"
             android:layout_marginBottom="16dp">
@@ -95,13 +95,31 @@
             android:layout_height="wrap_content"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:hint="Jellyseerr URL (optional)"
-            android:layout_marginBottom="32dp">
+            android:layout_marginBottom="16dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etJellyseerrUrl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textUri"
+                android:textColor="@color/white"
+                android:textColorHint="@color/text_secondary" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Jellyseerr API Key (optional) -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:hint="Jellyseerr API Key (optional)"
+            android:layout_marginBottom="32dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etJellyseerrApiKey"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
                 android:textColor="@color/white"
                 android:textColorHint="@color/text_secondary" />
 

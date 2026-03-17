@@ -68,7 +68,8 @@ class SettingsFragment : Fragment() {
                 val currentUserName = prefs.jellyfinUserName.first()
                 prefs.saveJellyfinCredentials(jellyfinUrl, currentToken, currentUserId, currentUserName)
                 if (jellyseerrUrl.isNotBlank()) {
-                    prefs.saveJellyseerrCredentials(jellyseerrUrl)
+                    val currentJellyseerrToken = prefs.jellyseerrToken.first()
+                    prefs.saveJellyseerrCredentials(jellyseerrUrl, currentJellyseerrToken)
                 }
                 ApiClient.resetClients()
                 Toast.makeText(context, "Settings saved", Toast.LENGTH_SHORT).show()

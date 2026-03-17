@@ -28,7 +28,8 @@ data class MediaItem(
     val playbackPositionTicks: Long = 0,
     val playedPercentage: Double = 0.0,
     val isPlayed: Boolean = false,
-    val cast: List<CastMember>?
+    val cast: List<CastMember>?,
+    val providerIds: Map<String, String>? = null
 ) : Parcelable {
 
     fun getRuntime(): String {
@@ -38,6 +39,12 @@ data class MediaItem(
         val minutes = totalMinutes % 60
         return if (hours > 0) "${hours}h ${minutes}m" else "${minutes}m"
     }
+
+    val tmdbId: Int?
+        get() = providerIds?.get("Tmdb")?.toIntOrNull()
+
+    val tvdbId: Int?
+        get() = providerIds?.get("Tvdb")?.toIntOrNull()
 }
 
 @Parcelize

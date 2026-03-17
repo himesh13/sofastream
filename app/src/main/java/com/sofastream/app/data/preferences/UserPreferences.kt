@@ -30,6 +30,7 @@ class UserPreferences(private val context: Context) {
     val jellyfinUserId: Flow<String> = dataStore.data.map { it[JELLYFIN_USER_ID] ?: "" }
     val jellyfinUserName: Flow<String> = dataStore.data.map { it[JELLYFIN_USER_NAME] ?: "" }
     val jellyseerrUrl: Flow<String> = dataStore.data.map { it[JELLYSEERR_URL] ?: "" }
+    val jellyseerrToken: Flow<String> = dataStore.data.map { it[JELLYSEERR_TOKEN] ?: "" }
     val isSetupComplete: Flow<Boolean> = dataStore.data.map { it[IS_SETUP_COMPLETE] ?: false }
 
     suspend fun saveJellyfinCredentials(url: String, token: String, userId: String, userName: String) {
@@ -41,9 +42,10 @@ class UserPreferences(private val context: Context) {
         }
     }
 
-    suspend fun saveJellyseerrCredentials(url: String) {
+    suspend fun saveJellyseerrCredentials(url: String, token: String) {
         dataStore.edit { prefs ->
             prefs[JELLYSEERR_URL] = url
+            prefs[JELLYSEERR_TOKEN] = token
         }
     }
 
@@ -62,4 +64,5 @@ class UserPreferences(private val context: Context) {
     fun getJellyfinUserIdSync(): String = runBlocking { jellyfinUserId.first() }
     fun isSetupCompleteSync(): Boolean = runBlocking { isSetupComplete.first() }
     fun getJellyseerrUrlSync(): String = runBlocking { jellyseerrUrl.first() }
+    fun getJellyseerrTokenSync(): String = runBlocking { jellyseerrToken.first() }
 }

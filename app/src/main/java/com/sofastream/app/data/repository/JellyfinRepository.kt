@@ -54,7 +54,8 @@ class JellyfinRepository(
             playbackPositionTicks = UserData?.PlaybackPositionTicks ?: 0,
             playedPercentage = UserData?.PlayedPercentage ?: 0.0,
             isPlayed = UserData?.Played ?: false,
-            cast = People?.map { CastMember(it.Name, it.Role, it.Type) }
+            cast = People?.map { CastMember(it.Name, it.Role, it.Type) },
+            providerIds = ProviderIds
         )
     }
 

@@ -70,11 +70,17 @@ class JellyseerrRepository(private val api: JellyseerrApi) {
         }
     }
 
-    suspend fun requestMedia(mediaType: String, mediaId: Int, seasons: List<Int>? = null): Result<JellyseerrRequest> {
+    suspend fun requestMedia(
+        mediaType: String,
+        mediaId: Int,
+        tvdbId: Int? = null,
+        seasons: List<Int>? = null
+    ): Result<JellyseerrRequest> {
         return try {
             val body = JellyseerrRequestBody(
                 mediaType = mediaType,
                 mediaId = mediaId,
+                tvdbId = tvdbId,
                 seasons = seasons
             )
             val response = api.createRequest(body)
@@ -119,6 +125,23 @@ class JellyseerrRepository(private val api: JellyseerrApi) {
             val response = api.getTvDetails(tvId)
             if (response.isSuccessful) {
                 Result.success(response.body()!!)
+            } else {
+                Result.failure(Exception("Error: ${response.code()}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun getRecommendations(tmdbId: Int, isTv: Boolean): Result<List<JellyseerrSearchResult>> {
+        return try {
+            val response = if (isTv) {
+                api.getTvRecommendations(tmdbId)
+            } else {
+                api.getMovieRecommendations(tmdbId)
+            }
+            if (response.isSuccessful) {
+                Result.success(response.body()?.results ?: emptyList())
             } else {
                 Result.failure(Exception("Error: ${response.code()}"))
             }

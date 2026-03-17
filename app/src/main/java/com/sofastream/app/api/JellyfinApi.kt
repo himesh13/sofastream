@@ -36,7 +36,7 @@ interface JellyfinApi {
         @Query("SortOrder") sortOrder: String = "Ascending",
         @Query("IncludeItemTypes") includeItemTypes: String,
         @Query("Recursive") recursive: Boolean = true,
-        @Query("Fields") fields: String = "PrimaryImageAspectRatio,BasicSyncInfo,MediaSourceCount",
+        @Query("Fields") fields: String = "PrimaryImageAspectRatio,BasicSyncInfo,MediaSourceCount,ProviderIds",
         @Query("ImageTypeLimit") imageTypeLimit: Int = 1,
         @Query("EnableImageTypes") enableImageTypes: String = "Primary,Backdrop,Thumb",
         @Query("StartIndex") startIndex: Int = 0,
@@ -48,7 +48,7 @@ interface JellyfinApi {
         @Path("userId") userId: String,
         @Path("itemId") itemId: String,
         @Header("X-Emby-Token") token: String,
-        @Query("Fields") fields: String = "Overview,Genres,Studios,People,MediaSources,MediaStreams,ExternalUrls,CommunityRating,OfficialRating,RunTimeTicks,Taglines"
+        @Query("Fields") fields: String = "Overview,Genres,Studios,People,MediaSources,MediaStreams,ExternalUrls,CommunityRating,OfficialRating,RunTimeTicks,Taglines,ProviderIds"
     ): Response<JellyfinItem>
 
     @GET("Shows/{seriesId}/Seasons")
@@ -149,7 +149,8 @@ data class JellyfinItem(
     val ParentIndexNumber: Int?,
     val UserData: JellyfinUserData?,
     val Taglines: List<String>?,
-    val People: List<JellyfinPerson>?
+    val People: List<JellyfinPerson>?,
+    val ProviderIds: Map<String, String>?
 )
 
 data class JellyfinStudio(val Name: String)
@@ -203,8 +204,8 @@ data class PlaybackInfoRequest(
 
 data class PlaybackDeviceProfile(
     val DirectPlayProfiles: List<DirectPlayProfile> = listOf(
-        DirectPlayProfile(Type = "Video"),
-        DirectPlayProfile(Type = "Audio")
+        DirectPlayProfile(Type = "Video", Container = "mp4,mkv,m4v,mov"),
+        DirectPlayProfile(Type = "Audio", Container = "mp3,aac,flac,wav")
     ),
     val TranscodingProfiles: List<TranscodingProfile> = listOf(
         TranscodingProfile(
@@ -213,11 +214,28 @@ data class PlaybackDeviceProfile(
             VideoCodec = "h264",
             AudioCodec = "aac,mp3,ac3"
         )
+    ),
+    val CodecProfiles: List<CodecProfile> = listOf(
+        CodecProfile(
+            Type = "Video",
+            Codec = "hevc",
+            Conditions = listOf(
+                ProfileCondition(
+                    Condition = "LessThanEqual",
+                    Property = "VideoBitDepth",
+                    Value = "8",
+                    IsRequired = true
+                )
+            )
+        )
     )
 )
 
 data class DirectPlayProfile(
-    val Type: String
+    val Type: String,
+    val Container: String? = null,
+    val AudioCodec: String? = null,
+    val VideoCodec: String? = null
 )
 
 data class TranscodingProfile(
@@ -225,6 +243,19 @@ data class TranscodingProfile(
     val Type: String,
     val VideoCodec: String,
     val AudioCodec: String
+)
+
+data class CodecProfile(
+    val Type: String,
+    val Codec: String,
+    val Conditions: List<ProfileCondition>
+)
+
+data class ProfileCondition(
+    val Condition: String,
+    val Property: String,
+    val Value: String,
+    val IsRequired: Boolean
 )
 
 data class PlaybackStartInfo(

@@ -9,5 +9,6 @@
     <string name="request_sent_success">Request sent successfully!</string>
     <string name="request_sent_error">Failed to send request</string>
     <string name="requesting_media">Sending request…</string>
+    <string name="loading_request_info">Loading request info…</string>
     <string name="player_error">Playback error: %1$s</string>
 </resources>

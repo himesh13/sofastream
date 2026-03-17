@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.sofastream.app.SofaStreamApp
 import com.sofastream.app.api.ApiClient
+import com.sofastream.app.api.JellyseerrMediaDetails
+import com.sofastream.app.api.JellyseerrSearchResult
 import com.sofastream.app.data.model.*
 import com.sofastream.app.data.repository.JellyfinRepository
 import com.sofastream.app.data.repository.JellyseerrRepository
@@ -27,6 +29,9 @@ class DetailViewModel : ViewModel() {
     private val _selectedSeason = MutableLiveData<Season?>()
     val selectedSeason: LiveData<Season?> = _selectedSeason
 
+    private val _recommendations = MutableLiveData<List<JellyseerrSearchResult>>()
+    val recommendations: LiveData<List<JellyseerrSearchResult>> = _recommendations
+
     private val _playbackInfo = MutableLiveData<PlaybackInfo?>()
     val playbackInfo: LiveData<PlaybackInfo?> = _playbackInfo
 
@@ -38,6 +43,9 @@ class DetailViewModel : ViewModel() {
 
     private val _requestSuccess = MutableLiveData<Boolean?>()
     val requestSuccess: LiveData<Boolean?> = _requestSuccess
+
+    private val _jellyseerrDetails = MutableLiveData<JellyseerrMediaDetails?>()
+    val jellyseerrDetails: LiveData<JellyseerrMediaDetails?> = _jellyseerrDetails
 
     private fun getJellyfinRepo(): JellyfinRepository {
         return JellyfinRepository(
@@ -63,6 +71,11 @@ class DetailViewModel : ViewModel() {
                 _mediaItem.value = item
                 if (item.type == MediaType.SERIES) {
                     loadSeasons(itemId)
+                }
+                
+                // Load recommendations from Jellyseerr
+                item.tmdbId?.let { tmdbId ->
+                    loadRecommendations(tmdbId, item.type == MediaType.SERIES)
                 }
             }
             result.onFailure { _error.value = it.message }
@@ -93,6 +106,14 @@ class DetailViewModel : ViewModel() {
         }
     }
 
+    private fun loadRecommendations(tmdbId: Int, isTv: Boolean) {
+        viewModelScope.launch {
+            val repo = getJellyseerrRepo() ?: return@launch
+            val result = repo.getRecommendations(tmdbId, isTv)
+            result.onSuccess { _recommendations.value = it }
+        }
+    }
+
     fun nextEpisodeToPlay(): MediaItem? {
         val episodes = _episodes.value
         return episodes?.firstOrNull { !it.isPlayed && it.playedPercentage > 0 }
@@ -110,14 +131,26 @@ class DetailViewModel : ViewModel() {
         }
     }
 
-    fun requestMedia(mediaType: String, tmdbId: Int) {
+    fun fetchJellyseerrDetails(tmdbId: Int, isTv: Boolean) {
+        viewModelScope.launch {
+            val repo = getJellyseerrRepo() ?: return@launch
+            val result = if (isTv) repo.getTvDetails(tmdbId) else repo.getMovieDetails(tmdbId)
+            result.onSuccess { _jellyseerrDetails.value = it }
+            result.onFailure { _error.value = "Failed to load Jellyseerr info" }
+        }
+    }
+
+    fun requestMedia(mediaType: String, tmdbId: Int, tvdbId: Int? = null, seasons: List<Int>? = null) {
         viewModelScope.launch {
             val repo = getJellyseerrRepo() ?: run {
                 _error.value = "Jellyseerr not configured"
                 return@launch
             }
-            val result = repo.requestMedia(mediaType, tmdbId)
-            result.onSuccess { _requestSuccess.value = true }
+            val result = repo.requestMedia(mediaType, tmdbId, tvdbId, seasons)
+            result.onSuccess { 
+                _requestSuccess.value = true 
+                _jellyseerrDetails.value = null // Reset after request
+            }
             result.onFailure { _requestSuccess.value = false }
         }
     }

@@ -19,10 +19,22 @@ interface JellyseerrApi {
         @Path("movieId") movieId: Int
     ): Response<JellyseerrMediaDetails>
 
+    @GET("api/v1/movie/{movieId}/recommendations")
+    suspend fun getMovieRecommendations(
+        @Path("movieId") movieId: Int,
+        @Query("page") page: Int = 1
+    ): Response<JellyseerrDiscoverResponse>
+
     @GET("api/v1/tv/{tvId}")
     suspend fun getTvDetails(
         @Path("tvId") tvId: Int
     ): Response<JellyseerrMediaDetails>
+
+    @GET("api/v1/tv/{tvId}/recommendations")
+    suspend fun getTvRecommendations(
+        @Path("tvId") tvId: Int,
+        @Query("page") page: Int = 1
+    ): Response<JellyseerrDiscoverResponse>
 
     @POST("api/v1/request")
     suspend fun createRequest(
@@ -84,7 +96,18 @@ data class JellyseerrMediaDetails(
     val firstAirDate: String?,
     val voteAverage: Double?,
     val genres: List<JellyseerrGenre>?,
-    val mediaInfo: JellyseerrMediaInfo?
+    val mediaInfo: JellyseerrMediaInfo?,
+    val seasons: List<JellyseerrSeason>?
+)
+
+data class JellyseerrSeason(
+    val id: Int,
+    val seasonNumber: Int,
+    val episodeCount: Int,
+    val name: String?,
+    val overview: String?,
+    val posterPath: String?,
+    val status: Int? = null // 1=Unknown, 2=Pending, 3=Processing, 4=Partially Available, 5=Available
 )
 
 data class JellyseerrGenre(
@@ -95,15 +118,24 @@ data class JellyseerrGenre(
 data class JellyseerrMediaInfo(
     val id: Int,
     val tmdbId: Int,
+    val tvdbId: Int?,
     val status: Int,
-    val requests: List<JellyseerrRequest>?
+    val requests: List<JellyseerrRequest>?,
+    val seasons: List<JellyseerrMediaInfoSeason>? = null
+)
+
+data class JellyseerrMediaInfoSeason(
+    val id: Int,
+    val seasonNumber: Int,
+    val status: Int
 )
 
 data class JellyseerrRequestBody(
     val mediaType: String,
     val mediaId: Int,
     val tvdbId: Int? = null,
-    val seasons: List<Int>? = null
+    val seasons: List<Int>? = null,
+    val is4k: Boolean = false
 )
 
 data class JellyseerrRequest(
