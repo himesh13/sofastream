@@ -98,8 +98,9 @@ interface JellyfinApi {
         @Body body: PlaybackProgressInfo
     ): Response<Unit>
 
-    @POST("Items/{itemId}/PlaybackInfo")
+    @POST("Users/{userId}/Items/{itemId}/PlaybackInfo")
     suspend fun getPlaybackInfo(
+        @Path("userId") userId: String,
         @Path("itemId") itemId: String,
         @Header("X-Emby-Token") token: String,
         @Body body: PlaybackInfoRequest
