@@ -60,7 +60,7 @@ class SearchFragment : Fragment() {
 
         viewModel.results.observe(viewLifecycleOwner) { results ->
             adapter.submitList(results)
-            binding.tvNoResults.isVisible = results.isEmpty() && binding.etSearch.text.isNotEmpty()
+            binding.tvNoResults.isVisible = results.isEmpty() && !binding.etSearch.text.isNullOrEmpty()
         }
 
         viewModel.error.observe(viewLifecycleOwner) { error ->

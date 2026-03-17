@@ -37,10 +37,10 @@ class ServerSetupActivity : AppCompatActivity() {
 
     private fun setupClickListeners() {
         binding.btnConnect.setOnClickListener {
-            val jellyfinUrl = binding.etJellyfinUrl.text.toString().trim()
-            val username = binding.etUsername.text.toString().trim()
-            val password = binding.etPassword.text.toString()
-            val jellyseerrUrl = binding.etJellyseerrUrl.text.toString().trim()
+            val jellyfinUrl = binding.etJellyfinUrl.text?.toString()?.trim() ?: ""
+            val username = binding.etUsername.text?.toString()?.trim() ?: ""
+            val password = binding.etPassword.text?.toString() ?: ""
+            val jellyseerrUrl = binding.etJellyseerrUrl.text?.toString()?.trim() ?: ""
 
             if (jellyfinUrl.isBlank() || username.isBlank()) {
                 Toast.makeText(this, "Jellyfin URL and username are required", Toast.LENGTH_SHORT).show()
@@ -56,7 +56,7 @@ class ServerSetupActivity : AppCompatActivity() {
         }
 
         binding.btnSkip.setOnClickListener {
-            val jellyfinUrl = binding.etJellyfinUrl.text.toString().trim()
+            val jellyfinUrl = binding.etJellyfinUrl.text?.toString()?.trim() ?: ""
             if (jellyfinUrl.isBlank()) {
                 Toast.makeText(this, "Jellyfin URL is required", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -67,8 +67,9 @@ class ServerSetupActivity : AppCompatActivity() {
             }
             lifecycleScope.launch {
                 prefs.saveJellyfinCredentials(jellyfinUrl, "", "default", "Guest")
-                if (binding.etJellyseerrUrl.text.isNotBlank()) {
-                    prefs.saveJellyseerrCredentials(binding.etJellyseerrUrl.text.toString().trim())
+                val jellyseerrUrl = binding.etJellyseerrUrl.text?.toString()?.trim()
+                if (!jellyseerrUrl.isNullOrBlank()) {
+                    prefs.saveJellyseerrCredentials(jellyseerrUrl)
                 }
                 prefs.setSetupComplete(true)
                 navigateToMain()
