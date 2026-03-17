@@ -93,6 +93,13 @@ class DetailViewModel : ViewModel() {
         }
     }
 
+    fun nextEpisodeToPlay(): MediaItem? {
+        val episodes = _episodes.value
+        return episodes?.firstOrNull { !it.isPlayed && it.playedPercentage > 0 }
+            ?: episodes?.firstOrNull { !it.isPlayed }
+            ?: episodes?.firstOrNull()
+    }
+
     fun getPlaybackInfo(itemId: String) {
         viewModelScope.launch {
             _isLoading.value = true
