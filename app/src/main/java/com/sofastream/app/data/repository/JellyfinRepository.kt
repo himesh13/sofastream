@@ -177,7 +177,7 @@ class JellyfinRepository(
 
     suspend fun getPlaybackInfo(itemId: String): Result<PlaybackInfo> {
         return try {
-            val response = api.getPlaybackInfo(userId, itemId, token)
+            val response = api.getPlaybackInfo(userId, itemId, token, PlaybackInfoRequest(UserId = userId))
             if (response.isSuccessful) {
                 val body = response.body() ?: return Result.failure(Exception("No data"))
                 val mediaSource = body.MediaSources.firstOrNull()

@@ -98,11 +98,12 @@ interface JellyfinApi {
         @Body body: PlaybackProgressInfo
     ): Response<Unit>
 
-    @GET("Users/{userId}/Items/{itemId}/PlaybackInfo")
+    @POST("Users/{userId}/Items/{itemId}/PlaybackInfo")
     suspend fun getPlaybackInfo(
         @Path("userId") userId: String,
         @Path("itemId") itemId: String,
-        @Header("X-Emby-Token") token: String
+        @Header("X-Emby-Token") token: String,
+        @Body body: PlaybackInfoRequest
     ): Response<JellyfinPlaybackInfo>
 }
 
@@ -193,6 +194,38 @@ data class JellyfinPerson(
 data class JellyfinPlaybackInfo(
     val MediaSources: List<JellyfinMediaSource>,
     val PlaySessionId: String?
+)
+
+data class PlaybackInfoRequest(
+    val UserId: String,
+    val MaxStreamingBitrate: Long = 140_000_000,
+    val DeviceProfile: PlaybackDeviceProfile = PlaybackDeviceProfile()
+)
+
+data class PlaybackDeviceProfile(
+    val DirectPlayProfiles: List<DirectPlayProfile> = listOf(
+        DirectPlayProfile(Type = "Video"),
+        DirectPlayProfile(Type = "Audio")
+    ),
+    val TranscodingProfiles: List<TranscodingProfile> = listOf(
+        TranscodingProfile(
+            Container = "ts",
+            Type = "Video",
+            VideoCodec = "h264",
+            AudioCodec = "aac,mp3,ac3"
+        )
+    )
+)
+
+data class DirectPlayProfile(
+    val Type: String
+)
+
+data class TranscodingProfile(
+    val Container: String,
+    val Type: String,
+    val VideoCodec: String,
+    val AudioCodec: String
 )
 
 data class PlaybackStartInfo(
