@@ -217,7 +217,7 @@ All public functions return `Result<T>` — success or failure with an `Exceptio
 | `reportPlaybackProgress(...)` | Unit (fire & forget) | POST to Sessions/Playing/Progress |
 
 **`getPlaybackInfo` stream URL resolution logic:**
-1. POST `Users/{userId}/Items/{itemId}/PlaybackInfo` with `PlaybackInfoRequest` body.
+1. POST `Items/{itemId}/PlaybackInfo` with `PlaybackInfoRequest` body.
 2. Take `body.MediaSources.first()`.
 3. If `SupportsDirectStream` → `Videos/{itemId}/stream?Static=true&mediaSourceId=...&api_key=...`
 4. Else if `SupportsTranscoding && TranscodingUrl != null` → `{baseUrl}{TranscodingUrl}`
@@ -291,7 +291,7 @@ Authentication header: `X-Emby-Token` (passed on every authenticated request).
 | POST | `Sessions/Playing` | `reportPlaybackStart` |
 | POST | `Sessions/Playing/Stopped` | `reportPlaybackStop` |
 | POST | `Sessions/Playing/Progress` | `reportPlaybackProgress` |
-| **POST** | `Users/{userId}/Items/{itemId}/PlaybackInfo` | `getPlaybackInfo` — Jellyfin requires POST (not GET) with a device-profile body |
+| **POST** | `Items/{itemId}/PlaybackInfo` | `getPlaybackInfo` — Jellyfin requires POST (not GET) with a device-profile body |
 
 #### Data Classes (Jellyfin API)
 
@@ -518,7 +518,7 @@ DetailFragment.onViewCreated
 User taps Play (or episode row)
   → viewModel.getPlaybackInfo(itemId)
     → JellyfinRepository.getPlaybackInfo(itemId)
-        → POST Users/{userId}/Items/{itemId}/PlaybackInfo  { UserId, MaxStreamingBitrate, DeviceProfile }
+        → POST Items/{itemId}/PlaybackInfo  { UserId, MaxStreamingBitrate, DeviceProfile }
         → resolve streamUrl (direct / transcode / fallback)
         → GET Users/{userId}/Items/{itemId}  (resume position + metadata)
         → return PlaybackInfo
