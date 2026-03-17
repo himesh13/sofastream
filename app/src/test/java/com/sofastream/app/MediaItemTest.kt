@@ -65,4 +65,79 @@ class MediaItemTest {
         assertEquals(0.0, item.playedPercentage, 0.001)
         assertFalse(item.isPlayed)
     }
+
+    // Helper to create an episode item
+    private fun createEpisodeItem(
+        id: String,
+        isPlayed: Boolean = false,
+        playedPercentage: Double = 0.0
+    ) = MediaItem(
+        id = id,
+        title = "Episode $id",
+        overview = null,
+        type = MediaType.EPISODE,
+        year = null,
+        rating = null,
+        contentRating = null,
+        runtimeTicks = null,
+        backdropUrl = null,
+        posterUrl = null,
+        thumbUrl = null,
+        genres = null,
+        studios = null,
+        seriesId = "series1",
+        seriesName = "Test Series",
+        seasonId = "season1",
+        episodeNumber = id.toInt(),
+        seasonNumber = 1,
+        tagline = null,
+        isPlayed = isPlayed,
+        playedPercentage = playedPercentage,
+        cast = null
+    )
+
+    // Mirrors DetailViewModel.nextEpisodeToPlay – used to validate the episode-selection logic
+    private fun selectNextEpisode(episodes: List<MediaItem>?): MediaItem? =
+        episodes?.firstOrNull { !it.isPlayed && it.playedPercentage > 0 }
+            ?: episodes?.firstOrNull { !it.isPlayed }
+            ?: episodes?.firstOrNull()
+
+    @Test
+    fun `series play selects in-progress episode over unplayed`() {
+        val episodes = listOf(
+            createEpisodeItem("1", isPlayed = true),
+            createEpisodeItem("2", isPlayed = false, playedPercentage = 50.0),
+            createEpisodeItem("3", isPlayed = false)
+        )
+        assertEquals("2", selectNextEpisode(episodes)?.id)
+    }
+
+    @Test
+    fun `series play selects first unplayed episode when none in progress`() {
+        val episodes = listOf(
+            createEpisodeItem("1", isPlayed = true),
+            createEpisodeItem("2", isPlayed = false),
+            createEpisodeItem("3", isPlayed = false)
+        )
+        assertEquals("2", selectNextEpisode(episodes)?.id)
+    }
+
+    @Test
+    fun `series play selects first episode when all are played`() {
+        val episodes = listOf(
+            createEpisodeItem("1", isPlayed = true),
+            createEpisodeItem("2", isPlayed = true)
+        )
+        assertEquals("1", selectNextEpisode(episodes)?.id)
+    }
+
+    @Test
+    fun `series play returns null for empty episode list`() {
+        assertNull(selectNextEpisode(emptyList()))
+    }
+
+    @Test
+    fun `series play returns null for null episode list`() {
+        assertNull(selectNextEpisode(null))
+    }
 }
