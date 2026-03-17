@@ -1,0 +1,27 @@
+# Gradle
+.gradle/
+build/
+*/build/
+
+# Android
+local.properties
+*.iml
+*.jks
+*.keystore
+release/
+
+# IDE
+.idea/
+*.iws
+*.ipr
+out/
+.DS_Store
+Thumbs.db
+
+# Kotlin
+*.class
+*.jar
+*.dex
+
+# Generated
+app/src/main/assets/
