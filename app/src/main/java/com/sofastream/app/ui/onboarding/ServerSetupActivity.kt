@@ -13,6 +13,9 @@ import com.sofastream.app.api.ApiClient
 import com.sofastream.app.api.JellyfinAuthRequest
 import com.sofastream.app.databinding.ActivityServerSetupBinding
 import kotlinx.coroutines.launch
+import java.net.ConnectException
+import java.net.SocketTimeoutException
+import java.net.UnknownHostException
 
 class ServerSetupActivity : AppCompatActivity() {
 
@@ -44,6 +47,11 @@ class ServerSetupActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
+            if (!jellyfinUrl.startsWith("http://") && !jellyfinUrl.startsWith("https://")) {
+                Toast.makeText(this, "Jellyfin URL must start with http:// or https://", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
             connectToJellyfin(jellyfinUrl, username, password, jellyseerrUrl)
         }
 
@@ -51,6 +59,10 @@ class ServerSetupActivity : AppCompatActivity() {
             val jellyfinUrl = binding.etJellyfinUrl.text.toString().trim()
             if (jellyfinUrl.isBlank()) {
                 Toast.makeText(this, "Jellyfin URL is required", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            if (!jellyfinUrl.startsWith("http://") && !jellyfinUrl.startsWith("https://")) {
+                Toast.makeText(this, "Jellyfin URL must start with http:// or https://", Toast.LENGTH_LONG).show()
                 return@setOnClickListener
             }
             lifecycleScope.launch {
@@ -89,6 +101,18 @@ class ServerSetupActivity : AppCompatActivity() {
                 } else {
                     Toast.makeText(this@ServerSetupActivity, "Authentication failed: ${response.code()}", Toast.LENGTH_LONG).show()
                 }
+            } catch (e: ConnectException) {
+                Toast.makeText(this@ServerSetupActivity,
+                    "Cannot reach server. Check the URL and ensure the server is running.",
+                    Toast.LENGTH_LONG).show()
+            } catch (e: SocketTimeoutException) {
+                Toast.makeText(this@ServerSetupActivity,
+                    "Connection timed out. Check the server address and your network.",
+                    Toast.LENGTH_LONG).show()
+            } catch (e: UnknownHostException) {
+                Toast.makeText(this@ServerSetupActivity,
+                    "Unknown host. Check the server URL.",
+                    Toast.LENGTH_LONG).show()
             } catch (e: Exception) {
                 Toast.makeText(this@ServerSetupActivity, "Connection failed: ${e.message}", Toast.LENGTH_LONG).show()
             } finally {

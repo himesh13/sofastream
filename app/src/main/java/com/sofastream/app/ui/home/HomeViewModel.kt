@@ -55,6 +55,8 @@ class HomeViewModel : ViewModel() {
                     _recentMovies.value = movies
                     _recentSeries.value = series
                     _featuredItem.value = items.firstOrNull()
+                }.onFailure { e ->
+                    _error.value = e.message
                 }
 
                 val continueResult = repo.getMovies(0, 10)

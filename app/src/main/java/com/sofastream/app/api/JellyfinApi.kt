@@ -6,7 +6,7 @@ import retrofit2.http.*
 // Jellyfin API endpoints
 interface JellyfinApi {
 
-    @GET("Users/AuthenticateByName")
+    @POST("Users/AuthenticateByName")
     suspend fun authenticateByName(
         @Header("X-Emby-Authorization") authorization: String,
         @Body body: JellyfinAuthRequest
