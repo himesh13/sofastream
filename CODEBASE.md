@@ -217,7 +217,7 @@ All public functions return `Result<T>` — success or failure with an `Exceptio
 | `reportPlaybackProgress(...)` | Unit (fire & forget) | POST to Sessions/Playing/Progress |
 
 **`getPlaybackInfo` stream URL resolution logic:**
-1. POST `Users/{userId}/Items/{itemId}/PlaybackInfo` with `PlaybackInfoRequest` body.
+1. POST `Items/{itemId}/PlaybackInfo` with `PlaybackInfoRequest` body.
 2. Take `body.MediaSources.first()`.
 3. If `SupportsDirectStream` → `Videos/{itemId}/stream?Static=true&mediaSourceId=...&api_key=...`
 4. Else if `SupportsTranscoding && TranscodingUrl != null` → `{baseUrl}{TranscodingUrl}`
@@ -282,16 +282,16 @@ Authentication header: `X-Emby-Token` (passed on every authenticated request).
 | Method | Path | Function |
 |---|---|---|
 | POST | `Users/AuthenticateByName` | `authenticateByName` — uses `X-Emby-Authorization` header |
-| GET | `Users/{userId}/Views` | `getUserViews` |
-| GET | `Users/{userId}/Items/Latest` | `getLatestMedia` |
-| GET | `Users/{userId}/Items` | `getItems` (movies, series, search) |
-| GET | `Users/{userId}/Items/{itemId}` | `getItemDetails` |
+| GET | `UserViews` | `getUserViews` |
+| GET | `Items/Latest` | `getLatestMedia` |
+| GET | `Items` | `getItems` (movies, series, search) |
+| GET | `Items/{itemId}` | `getItemDetails` |
 | GET | `Shows/{seriesId}/Seasons` | `getSeasons` |
 | GET | `Shows/{seriesId}/Episodes` | `getEpisodes` |
 | POST | `Sessions/Playing` | `reportPlaybackStart` |
 | POST | `Sessions/Playing/Stopped` | `reportPlaybackStop` |
 | POST | `Sessions/Playing/Progress` | `reportPlaybackProgress` |
-| **POST** | `Users/{userId}/Items/{itemId}/PlaybackInfo` | `getPlaybackInfo` — Jellyfin requires POST (not GET) with a device-profile body |
+| **POST** | `Items/{itemId}/PlaybackInfo` | `getPlaybackInfo` — Jellyfin requires POST (not GET) with a device-profile body |
 
 #### Data Classes (Jellyfin API)
 
@@ -494,10 +494,10 @@ ServerSetupActivity.onCreate
 HomeFragment.onViewCreated
   → viewModel.loadHomeContent()
     → JellyfinRepository.getLatestMedia()
-        → GET Users/{userId}/Items/Latest
+        → GET Items/Latest
         → split items by MediaType → _recentMovies, _recentSeries, _featuredItem
     → JellyfinRepository.getMovies(0, 10)
-        → GET Users/{userId}/Items?IncludeItemTypes=Movie&...
+        → GET Items?IncludeItemTypes=Movie&...
         → filter playedPercentage > 0 && < 100 → _continueWatching
   → LiveData observers update RecyclerViews + featured banner
 ```
@@ -511,16 +511,16 @@ HomeFragment: navigateToDetail(item)
 DetailFragment.onViewCreated
   → viewModel.loadDetails(item.id)
     → JellyfinRepository.getItemDetails(itemId)
-        → GET Users/{userId}/Items/{itemId}?Fields=...
+        → GET Items/{itemId}?Fields=...
     → if Series: loadSeasons → loadEpisodes(firstSeason)
   → LiveData observers bind UI
 
 User taps Play (or episode row)
   → viewModel.getPlaybackInfo(itemId)
     → JellyfinRepository.getPlaybackInfo(itemId)
-        → POST Users/{userId}/Items/{itemId}/PlaybackInfo  { UserId, MaxStreamingBitrate, DeviceProfile }
+        → POST Items/{itemId}/PlaybackInfo  { UserId, MaxStreamingBitrate, DeviceProfile }
         → resolve streamUrl (direct / transcode / fallback)
-        → GET Users/{userId}/Items/{itemId}  (resume position + metadata)
+        → GET Items/{itemId}  (resume position + metadata)
         → return PlaybackInfo
   → _playbackInfo LiveData → DetailFragment observer
   → Intent(PlayerActivity, EXTRA_PLAYBACK_INFO=playbackInfo)
@@ -536,7 +536,7 @@ PlayerActivity.onCreate
 SearchFragment: TextWatcher → viewModel.search(query)
   → cancel previous job, delay 300 ms
   → JellyfinRepository.searchItems(query)
-      → GET Users/{userId}/Items?searchTerm=...&IncludeItemTypes=Movie,Series
+      → GET Items?searchTerm=...&IncludeItemTypes=Movie,Series
   → _results LiveData → MediaGridAdapter.submitList(items)
 ```
 
