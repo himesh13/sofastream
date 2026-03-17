@@ -141,7 +141,14 @@ class DetailFragment : Fragment() {
         }
 
         binding.btnPlay.setOnClickListener {
-            viewModel.getPlaybackInfo(item.id)
+            if (item.type == MediaType.SERIES) {
+                val nextEpisode = viewModel.nextEpisodeToPlay()
+                if (nextEpisode != null) {
+                    viewModel.getPlaybackInfo(nextEpisode.id)
+                }
+            } else {
+                viewModel.getPlaybackInfo(item.id)
+            }
         }
 
         binding.btnRequest.setOnClickListener {
