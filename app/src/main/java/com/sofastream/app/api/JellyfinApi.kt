@@ -12,15 +12,15 @@ interface JellyfinApi {
         @Body body: JellyfinAuthRequest
     ): Response<JellyfinAuthResponse>
 
-    @GET("Users/{userId}/Views")
+    @GET("UserViews")
     suspend fun getUserViews(
-        @Path("userId") userId: String,
+        @Query("userId") userId: String,
         @Header("X-Emby-Token") token: String
     ): Response<JellyfinItemsResponse>
 
-    @GET("Users/{userId}/Items/Latest")
+    @GET("Items/Latest")
     suspend fun getLatestMedia(
-        @Path("userId") userId: String,
+        @Query("userId") userId: String,
         @Header("X-Emby-Token") token: String,
         @Query("Limit") limit: Int = 20,
         @Query("Fields") fields: String = "PrimaryImageAspectRatio,BasicSyncInfo,MediaSourceCount",
@@ -28,9 +28,9 @@ interface JellyfinApi {
         @Query("EnableImageTypes") enableImageTypes: String = "Primary,Backdrop,Thumb"
     ): Response<List<JellyfinItem>>
 
-    @GET("Users/{userId}/Items")
+    @GET("Items")
     suspend fun getItems(
-        @Path("userId") userId: String,
+        @Query("userId") userId: String,
         @Header("X-Emby-Token") token: String,
         @Query("SortBy") sortBy: String = "SortName",
         @Query("SortOrder") sortOrder: String = "Ascending",
@@ -43,10 +43,10 @@ interface JellyfinApi {
         @Query("Limit") limit: Int = 50
     ): Response<JellyfinItemsResponse>
 
-    @GET("Users/{userId}/Items/{itemId}")
+    @GET("Items/{itemId}")
     suspend fun getItemDetails(
-        @Path("userId") userId: String,
         @Path("itemId") itemId: String,
+        @Query("userId") userId: String,
         @Header("X-Emby-Token") token: String,
         @Query("Fields") fields: String = "Overview,Genres,Studios,People,MediaSources,MediaStreams,ExternalUrls,CommunityRating,OfficialRating,RunTimeTicks,Taglines"
     ): Response<JellyfinItem>
@@ -68,9 +68,9 @@ interface JellyfinApi {
         @Query("Fields") fields: String = "Overview,MediaSources"
     ): Response<JellyfinItemsResponse>
 
-    @GET("Users/{userId}/Items")
+    @GET("Items")
     suspend fun searchItems(
-        @Path("userId") userId: String,
+        @Query("userId") userId: String,
         @Header("X-Emby-Token") token: String,
         @Query("searchTerm") searchTerm: String,
         @Query("Recursive") recursive: Boolean = true,

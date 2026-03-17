@@ -113,7 +113,7 @@ class JellyfinRepository(
 
     suspend fun getItemDetails(itemId: String): Result<MediaItem> {
         return try {
-            val response = api.getItemDetails(userId, itemId, token)
+            val response = api.getItemDetails(itemId, userId, token)
             if (response.isSuccessful) {
                 val item = response.body() ?: return Result.failure(Exception("No data"))
                 Result.success(item.toMediaItem())
@@ -195,7 +195,7 @@ class JellyfinRepository(
                     }
                 }
 
-                val itemDetails = api.getItemDetails(userId, itemId, token).body()
+                val itemDetails = api.getItemDetails(itemId, userId, token).body()
 
                 val playbackInfo = PlaybackInfo(
                     mediaItemId = itemId,
