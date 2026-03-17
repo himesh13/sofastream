@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -15,6 +14,7 @@ import com.sofastream.app.SofaStreamApp
 import com.sofastream.app.api.ApiClient
 import com.sofastream.app.databinding.FragmentSettingsBinding
 import com.sofastream.app.ui.onboarding.ServerSetupActivity
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 class SettingsFragment : Fragment() {
@@ -57,7 +57,16 @@ class SettingsFragment : Fragment() {
                 return@setOnClickListener
             }
 
+            if (!jellyfinUrl.startsWith("http://") && !jellyfinUrl.startsWith("https://")) {
+                Toast.makeText(context, "Jellyfin URL must start with http:// or https://", Toast.LENGTH_LONG).show()
+                return@setOnClickListener
+            }
+
             lifecycleScope.launch {
+                val currentToken = prefs.jellyfinToken.first()
+                val currentUserId = prefs.jellyfinUserId.first()
+                val currentUserName = prefs.jellyfinUserName.first()
+                prefs.saveJellyfinCredentials(jellyfinUrl, currentToken, currentUserId, currentUserName)
                 if (jellyseerrUrl.isNotBlank()) {
                     prefs.saveJellyseerrCredentials(jellyseerrUrl)
                 }
